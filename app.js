@@ -222,6 +222,16 @@ function renderLogin() {
         Config.save(token, owner, repo);
         await loadData();
     });
+
+    // Auto-fill with default configuration
+    const defaultConfig = Config.getDefaultConfig();
+    if (defaultConfig) {
+        setTimeout(() => {
+            document.getElementById('token').value = defaultConfig.token;
+            document.getElementById('owner').value = defaultConfig.owner;
+            document.getElementById('repo').value = defaultConfig.repo;
+        }, 100);
+    }
 }
 
 function renderDashboard() {
