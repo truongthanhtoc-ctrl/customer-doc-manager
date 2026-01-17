@@ -1,0 +1,12 @@
+{
+  "customers": [
+    {
+      "id": "2e7b753f-98a7-4779-b017-c76e3b5e1eb7",
+      "name": "测试客户A",
+      "contact": "",
+      "documents": [],
+      "createdAt": "2026-01-17T12:44:15.100Z"
+    }
+  ],
+  "lastUpdated": "2026-01-17T12:44:15.101Z"
+}
