@@ -75,6 +75,98 @@ async function syncData() {
     }
 }
 
+
+// --- Modal Functions ---
+
+function showCustomerModal() {
+    // Create modal overlay
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fadeIn';
+    modal.id = 'customerModal';
+
+    modal.innerHTML = `
+        <div class="bg-white rounded-2xl p-8 shadow-2xl w-full max-w-md transform animate-slideUp">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6">新建客户</h2>
+            <form id="customerForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">客户名称</label>
+                    <input 
+                        type="text" 
+                        id="customerNameInput" 
+                        required 
+                        autofocus
+                        class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition"
+                        placeholder="请输入客户名称"
+                    >
+                </div>
+                <div class="flex space-x-3 pt-4">
+                    <button 
+                        type="button" 
+                        id="cancelBtn"
+                        class="flex-1 px-4 py-3 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition font-medium"
+                    >
+                        取消
+                    </button>
+                    <button 
+                        type="submit"
+                        class="flex-1 px-4 py-3 rounded-lg bg-brand-600 hover:bg-brand-700 text-white transition font-medium shadow-lg shadow-brand-500/30"
+                    >
+                        确认创建
+                    </button>
+                </div>
+            </form>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Focus input
+    const input = document.getElementById('customerNameInput');
+    setTimeout(() => input.focus(), 100);
+
+    // Close modal function
+    const closeModal = () => {
+        modal.classList.add('animate-fadeOut');
+        setTimeout(() => document.body.removeChild(modal), 200);
+    };
+
+    // Handle form submit
+    document.getElementById('customerForm').onsubmit = (e) => {
+        e.preventDefault();
+        const name = input.value.trim();
+        if (name) {
+            const newCustomer = {
+                id: crypto.randomUUID(),
+                name,
+                contact: '',
+                documents: [],
+                files: [],
+                createdAt: new Date().toISOString()
+            };
+            State.customers.unshift(newCustomer);
+            closeModal();
+            syncData();
+        }
+    };
+
+    // Handle cancel
+    document.getElementById('cancelBtn').onclick = closeModal;
+
+    // Close on background click
+    modal.onclick = (e) => {
+        if (e.target === modal) closeModal();
+    };
+
+    // Close on ESC key
+    const handleEsc = (e) => {
+        if (e.key === 'Escape') {
+            closeModal();
+            document.removeEventListener('keydown', handleEsc);
+        }
+    };
+    document.addEventListener('keydown', handleEsc);
+}
+
 // --- Views ---
 
 function renderLoading(msg = '加载中...') {
@@ -212,19 +304,7 @@ function renderDashboard() {
     };
 
     document.getElementById('btnAddCustomer').onclick = () => {
-        const name = prompt('请输入客户名称:');
-        if (name) {
-            const newCustomer = {
-                id: crypto.randomUUID(),
-                name,
-                contact: '',
-                documents: [],
-                files: [], // 新增：文件列表
-                createdAt: new Date().toISOString()
-            };
-            State.customers.unshift(newCustomer); // Add to top
-            syncData();
-        }
+        showCustomerModal();
     };
 }
 
