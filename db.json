@@ -25,8 +25,19 @@
           "status": "进行中"
         }
       ],
-      "createdAt": "2026-01-17T12:44:15.100Z"
+      "createdAt": "2026-01-17T12:44:15.100Z",
+      "files": [
+        {
+          "id": "b2a65110-26ce-454c-a92e-91f89c19bff0",
+          "name": "阿根廷看厂后要求.txt",
+          "originalSize": 571,
+          "compressedSize": 571,
+          "path": "files/customer-2e7b753f-98a7-4779-b017-c76e3b5e1eb7/阿根廷看厂后要求.txt",
+          "uploadDate": "2026-01-17T13:21:29.255Z",
+          "type": "text/plain"
+        }
+      ]
     }
   ],
-  "lastUpdated": "2026-01-17T12:47:27.758Z"
+  "lastUpdated": "2026-01-17T13:21:29.255Z"
 }
