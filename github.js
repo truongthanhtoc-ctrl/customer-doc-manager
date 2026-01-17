@@ -99,5 +99,48 @@ export const GitHub = {
             return initialData;
         }
         return exists.content;
+    },
+
+    // Upload a file to GitHub
+    // path: file path in repo (e.g., 'files/customer-123/contract.pdf')
+    // content: Base64 encoded file content
+    // message: commit message
+    async uploadFile(path, content, message = 'Upload file') {
+        const body = {
+            message,
+            content, // Already Base64
+            branch: BRANCH
+        };
+
+        return await this.request(`contents/${path}`, {
+            method: 'PUT',
+            body: JSON.stringify(body)
+        });
+    },
+
+    // Download a file from GitHub
+    // Returns Base64 content
+    async downloadFile(path) {
+        const data = await this.request(`contents/${path}?ref=${BRANCH}`);
+        if (!data) return null;
+        return data.content; // Base64
+    },
+
+    // Delete a file from GitHub
+    async deleteFile(path, message = 'Delete file') {
+        // First get the file SHA
+        const data = await this.request(`contents/${path}?ref=${BRANCH}`);
+        if (!data) throw new Error('文件不存在');
+
+        const body = {
+            message,
+            sha: data.sha,
+            branch: BRANCH
+        };
+
+        return await this.request(`contents/${path}`, {
+            method: 'DELETE',
+            body: JSON.stringify(body)
+        });
     }
 };

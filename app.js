@@ -5,6 +5,7 @@
 
 import { Config } from './config.js';
 import { GitHub } from './github.js';
+import { FileUtils } from './fileUtils.js';
 
 // --- State ---
 const State = {
@@ -218,6 +219,7 @@ function renderDashboard() {
                 name,
                 contact: '',
                 documents: [],
+                files: [], // 新增：文件列表
                 createdAt: new Date().toISOString()
             };
             State.customers.unshift(newCustomer); // Add to top
@@ -285,6 +287,63 @@ function renderCustomerDetail() {
                     </div>
                 `).join('')}
             </div>
+
+            <!-- Files Section -->
+            <div class="mt-12">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-slate-700">📁 客户资料</h2>
+                    <span class="text-sm text-slate-400">${(customer.files || []).length} 个文件</span>
+                </div>
+
+                <!-- Upload Area -->
+                <div id="uploadArea" class="bg-gradient-to-br from-brand-50 to-indigo-50 border-2 border-dashed border-brand-300 rounded-xl p-8 text-center mb-6 cursor-pointer hover:border-brand-500 transition group">
+                    <input type="file" id="fileInput" class="hidden" multiple>
+                    <div class="text-brand-600 mb-3">
+                        <svg class="w-16 h-16 mx-auto opacity-60 group-hover:opacity-100 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-700 mb-2">拖拽文件到这里</h3>
+                    <p class="text-sm text-slate-500 mb-1">或点击选择文件</p>
+                    <p class="text-xs text-slate-400">支持 PDF、图片、Office 文档 · 自动压缩 · 最大 100MB</p>
+                </div>
+
+                <!-- File List -->
+                <div class="space-y-3">
+                    ${(customer.files || []).length === 0 ? `<div class="text-center py-10 text-slate-400">暂无文件</div>` : ''}
+                    ${(customer.files || []).map((file, idx) => `
+                        <div class="bg-white p-4 rounded-xl border border-slate-100 hover:shadow-md transition">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4 flex-1">
+                                    <div class="text-4xl">${FileUtils.getFileIcon(file.name)}</div>
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-slate-800">${file.name}</h4>
+                                        <div class="flex items-center space-x-3 text-xs text-slate-400 mt-1">
+                                            <span>压缩后 ${FileUtils.formatSize(file.compressedSize)}</span>
+                                            ${file.originalSize !== file.compressedSize ? `<span class="text-green-600">节省 ${Math.round((1 - file.compressedSize / file.originalSize) * 100)}%</span>` : ''}
+                                            <span>·</span>
+                                            <span>${new Date(file.uploadDate).toLocaleString()}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    ${FileUtils.canPreview(file.name) ? `
+                                        <button onclick="previewFile(${idx})" class="px-3 py-1.5 text-sm text-brand-600 hover:bg-brand-50 rounded-lg transition">
+                                            👁️ 预览
+                                        </button>
+                                    ` : ''}
+                                    <button onclick="downloadFile(${idx})" class="px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50 rounded-lg transition">
+                                        ⬇️ 下载
+                                    </button>
+                                    <button onclick="deleteFile(${idx})" class="p-2 text-slate-300 hover:text-red-500 transition">
+                                        ${Icons.trash}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
         </div>
     `;
 
@@ -325,6 +384,158 @@ function renderCustomerDetail() {
         if (confirm('删除此单据?')) {
             customer.documents.splice(idx, 1);
             syncData();
+        }
+    };
+
+    // File Management Functions
+    if (!customer.files) customer.files = [];
+
+    // Setup upload area
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+
+    uploadArea.onclick = () => fileInput.click();
+
+    // Drag and drop
+    uploadArea.ondragover = (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('border-brand-600', 'bg-brand-100');
+    };
+
+    uploadArea.ondragleave = () => {
+        uploadArea.classList.remove('border-brand-600', 'bg-brand-100');
+    };
+
+    uploadArea.ondrop = async (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('border-brand-600', 'bg-brand-100');
+        const files = Array.from(e.dataTransfer.files);
+        await handleFileUpload(files);
+    };
+
+    fileInput.onchange = async (e) => {
+        const files = Array.from(e.target.files);
+        await handleFileUpload(files);
+        fileInput.value = ''; // Reset
+    };
+
+    // Handle file upload
+    async function handleFileUpload(files) {
+        for (const file of files) {
+            try {
+                renderLoading(`正在压缩 ${file.name}...`);
+
+                // Compress file
+                const { file: compressedFile, originalSize, compressedSize } = await FileUtils.autoCompress(file);
+
+                // Check size limit (100MB)
+                if (compressedSize > 100 * 1024 * 1024) {
+                    alert(`文件 ${file.name} 压缩后仍超过 100MB，无法上传`);
+                    continue;
+                }
+
+                renderLoading(`正在上传 ${file.name} 到 GitHub...`);
+
+                // Convert to Base64
+                const base64Content = await FileUtils.fileToBase64(compressedFile);
+
+                // Upload to GitHub
+                const filePath = `files/customer-${customer.id}/${compressedFile.name}`;
+                await GitHub.uploadFile(filePath, base64Content, `Upload ${compressedFile.name}`);
+
+                // Add to customer files
+                customer.files.push({
+                    id: crypto.randomUUID(),
+                    name: compressedFile.name,
+                    originalSize,
+                    compressedSize,
+                    path: filePath,
+                    uploadDate: new Date().toISOString(),
+                    type: compressedFile.type
+                });
+
+                // Save metadata
+                await syncData();
+            } catch (error) {
+                alert(`上传失败: ${error.message}`);
+                renderCustomerDetail();
+            }
+        }
+    }
+
+    // Download file
+    window.downloadFile = async (idx) => {
+        const file = customer.files[idx];
+        try {
+            renderLoading(`正在下载 ${file.name}...`);
+            const base64Content = await GitHub.downloadFile(file.path);
+            const blob = FileUtils.base64ToBlob(base64Content, file.type);
+
+            // Trigger download
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = file.name;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            renderCustomerDetail();
+        } catch (error) {
+            alert(`下载失败: ${error.message}`);
+            renderCustomerDetail();
+        }
+    };
+
+    // Delete file
+    window.deleteFile = async (idx) => {
+        const file = customer.files[idx];
+        if (confirm(`确定要删除 ${file.name}？`)) {
+            try {
+                renderLoading(`正在删除 ${file.name}...`);
+                await GitHub.deleteFile(file.path, `Delete ${file.name}`);
+                customer.files.splice(idx, 1);
+                await syncData();
+            } catch (error) {
+                alert(`删除失败: ${error.message}`);
+                renderCustomerDetail();
+            }
+        }
+    };
+
+    // Preview file
+    window.previewFile = async (idx) => {
+        const file = customer.files[idx];
+        try {
+            renderLoading(`正在加载预览...`);
+            const base64Content = await GitHub.downloadFile(file.path);
+            const blob = FileUtils.base64ToBlob(base64Content, file.type);
+            const url = URL.createObjectURL(blob);
+
+            // Create modal for preview
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4';
+            modal.onclick = () => {
+                document.body.removeChild(modal);
+                URL.revokeObjectURL(url);
+            };
+
+            const isImage = file.type.startsWith('image/');
+            const content = isImage
+                ? `<img src="${url}" class="max-w-full max-h-full rounded-lg shadow-2xl">`
+                : `<iframe src="${url}" class="w-full h-full rounded-lg shadow-2xl"></iframe>`;
+
+            modal.innerHTML = `
+                <div class="relative max-w-6xl max-h-full" onclick="event.stopPropagation()">
+                    <button onclick="this.parentElement.parentElement.click()" class="absolute -top-12 right-0 text-white hover:text-red-400 text-2xl">✕ 关闭</button>
+                    ${content}
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            renderCustomerDetail();
+        } catch (error) {
+            alert(`预览失败: ${error.message}`);
+            renderCustomerDetail();
         }
     };
 }

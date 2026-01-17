@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,7 +28,10 @@
         }
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
         .glass {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
@@ -36,6 +40,7 @@
         }
     </style>
 </head>
+
 <body class="bg-gradient-to-br from-slate-100 to-slate-200 min-h-screen text-slate-800">
     <div id="app" class="min-h-screen flex flex-col">
         <!-- Application logic will inject content here -->
@@ -46,6 +51,11 @@
             </div>
         </div>
     </div>
+    <!-- 文件压缩库 -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
     <script type="module" src="./app.js"></script>
 </body>
+
 </html>
