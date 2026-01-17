@@ -1,6 +1,14 @@
 {
   "customers": [
     {
+      "id": "56edf362-25f8-4a7d-ba7a-b2f326efdc53",
+      "name": "Test Customer from AI",
+      "contact": "",
+      "documents": [],
+      "files": [],
+      "createdAt": "2026-01-17T13:26:40.163Z"
+    },
+    {
       "id": "17b019aa-ac07-4bb2-b819-76ef429b94db",
       "name": "2024-01发票",
       "contact": "",
@@ -39,5 +47,5 @@
       ]
     }
   ],
-  "lastUpdated": "2026-01-17T13:21:29.255Z"
+  "lastUpdated": "2026-01-17T13:26:40.163Z"
 }
