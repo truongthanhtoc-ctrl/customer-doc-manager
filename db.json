@@ -4,9 +4,16 @@
       "id": "2e7b753f-98a7-4779-b017-c76e3b5e1eb7",
       "name": "测试客户A",
       "contact": "",
-      "documents": [],
+      "documents": [
+        {
+          "id": "4dbe37df-81da-44f0-a41a-2b65e5927c11",
+          "title": "2024-01发票",
+          "date": "2026/1/17",
+          "status": "进行中"
+        }
+      ],
       "createdAt": "2026-01-17T12:44:15.100Z"
     }
   ],
-  "lastUpdated": "2026-01-17T12:44:15.101Z"
+  "lastUpdated": "2026-01-17T12:45:39.780Z"
 }
