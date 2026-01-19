@@ -182,30 +182,30 @@ function renderLoading(msg = '加载中...') {
 
 function renderLogin() {
     appDiv.innerHTML = `
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md glass border border-white-400">
-                <div class="text-center mb-8">
-                    <h1 class="text-3xl font-bold text-slate-800 mb-2">欢迎使用</h1>
-                    <p class="text-slate-500">客户单据管理系统 (GitHub 版)</p>
+        <div class="flex items-center justify-center min-h-screen bg-slate-100">
+            <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md border border-slate-200">
+                <div class="mb-6">
+                    <h1 class="text-2xl font-bold text-slate-800 mb-1">客户管理系统</h1>
+                    <p class="text-sm text-slate-500">连接到 GitHub 仓库</p>
                 </div>
-                <form id="loginForm" class="space-y-6">
+                <form id="loginForm" class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">GitHub Token (PAT)</label>
-                        <input type="password" id="token" required class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition" placeholder="ghp_...">
+                        <label class="block text-sm font-medium text-slate-700 mb-2">GitHub Token (PAT)</label>
+                        <input type="password" id="token" required class="w-full px-3 py-2 rounded-md border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm" placeholder="ghp_...">
                         <p class="text-xs text-slate-400 mt-1">Token 仅保存在本地浏览器中</p>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-2 gap-3">
                          <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">用户名</label>
-                            <input type="text" id="owner" required class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-brand-500 transition" placeholder="Username">
+                            <label class="block text-sm font-medium text-slate-700 mb-2">用户名</label>
+                            <input type="text" id="owner" required class="w-full px-3 py-2 rounded-md border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm" placeholder="Username">
                         </div>
                          <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">仓库名</label>
-                            <input type="text" id="repo" required class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-brand-500 transition" placeholder="Repository">
+                            <label class="block text-sm font-medium text-slate-700 mb-2">仓库名</label>
+                            <input type="text" id="repo" required class="w-full px-3 py-2 rounded-md border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm" placeholder="Repository">
                         </div>
                     </div>
                    
-                    <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 rounded-xl transition duration-200 shadow-lg shadow-brand-500/30">
+                    <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 rounded-md transition">
                         连接仓库
                     </button>
                 </form>
@@ -240,49 +240,104 @@ function renderDashboard() {
     );
 
     appDiv.innerHTML = `
-        <div class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
-            <!-- Header -->
-            <header class="flex justify-between items-center mb-8">
-                <div>
-                    <h1 class="text-2xl font-bold text-slate-800">客户列表</h1>
-                    <p class="text-slate-500 text-sm mt-1">共 ${State.customers.length} 位客户</p>
+        <div class="desktop-layout">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h2 class="text-lg font-bold">客户管理系统</h2>
+                    <p class="text-xs text-slate-400 mt-1">Customer Manager</p>
                 </div>
-                <div class="flex items-center space-x-3">
-                    <button id="btnLogout" class="p-2 text-slate-400 hover:text-red-500 transition" title="退出">${Icons.logout}</button>
-                    <button id="btnAddCustomer" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg shadow-md shadow-brand-500/20 flex items-center space-x-2 transition">
-                        ${Icons.plus} <span>新建客户</span>
+                
+                <nav class="sidebar-nav">
+                    <div class="nav-item active">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <span>客户列表</span>
+                    </div>
+                </nav>
+                
+                <div class="sidebar-footer">
+                    <button id="btnLogout" class="nav-item w-full text-left text-slate-400 hover:text-red-400">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                        </svg>
+                        <span>退出登录</span>
                     </button>
                 </div>
-            </header>
-
-            <!-- Search -->
-            <div class="mb-6">
-                <input type="text" id="searchInput" placeholder="搜索客户..." 
-                    class="w-full px-5 py-3 rounded-xl border-none shadow-sm focus:ring-2 focus:ring-brand-500 text-slate-700 outline-none"
-                    value="${State.searchQuery}">
             </div>
 
-            <!-- List -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                ${filteredCustomers.map(c => `
-                    <div class="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition cursor-pointer border border-slate-100 group" onclick="viewCustomer('${c.id}')">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="bg-brand-50 text-brand-600 p-3 rounded-lg group-hover:bg-brand-100 transition">
-                                ${Icons.user}
-                            </div>
-                            <span class="text-xs font-mono text-slate-300">ID: ${c.id.slice(0, 4)}</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-800 mb-1">${c.name}</h3>
-                        <p class="text-slate-500 text-sm mb-4">${c.contact || 'No contact info'}</p>
-                        <div class="flex items-center justify-between text-sm text-slate-400 border-t border-slate-50 pt-3">
-                            <span class="flex items-center space-x-1">
-                                ${Icons.document}
-                                <span>${c.documents ? c.documents.length : 0} 个单据</span>
-                            </span>
-                            <span class="text-xs">查看详情 &rarr;</span>
-                        </div>
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Top Bar -->
+                <div class="top-bar">
+                    <div>
+                        <h1 class="text-lg font-bold text-slate-800">客户列表</h1>
+                        <p class="text-sm text-slate-500">共 ${State.customers.length} 位客户</p>
                     </div>
-                `).join('')}
+                    <div class="flex items-center space-x-3">
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            placeholder="搜索客户..." 
+                            class="search-input w-64"
+                            value="${State.searchQuery}"
+                        >
+                        <button id="btnAddCustomer" class="btn btn-primary flex items-center space-x-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            <span>新建客户</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Content Area -->
+                <div class="content-area">
+                    ${filteredCustomers.length === 0 ? `
+                        <div class="flex flex-col items-center justify-center h-full text-slate-400">
+                            <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                            </svg>
+                            <p class="text-lg font-medium">暂无客户数据</p>
+                            <p class="text-sm mt-1">点击右上角"新建客户"开始添加</p>
+                        </div>
+                    ` : `
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 30%">客户名称</th>
+                                    <th style="width: 25%">联系方式</th>
+                                    <th style="width: 15%">单据数量</th>
+                                    <th style="width: 20%">创建时间</th>
+                                    <th style="width: 10%">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${filteredCustomers.map(c => `
+                                    <tr class="cursor-pointer" onclick="viewCustomer('${c.id}')">
+                                        <td>
+                                            <div class="flex items-center">
+                                                <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center mr-3 font-semibold text-sm">
+                                                    ${c.name.charAt(0).toUpperCase()}
+                                                </div>
+                                                <span class="font-medium">${c.name}</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-slate-600">${c.contact || '-'}</td>
+                                        <td>
+                                            <span class="badge badge-blue">${c.documents ? c.documents.length : 0} 个</span>
+                                        </td>
+                                        <td class="text-slate-600">${new Date(c.createdAt).toLocaleDateString('zh-CN')}</td>
+                                        <td>
+                                            <button class="text-brand-600 hover:text-brand-700 font-medium text-sm">查看详情</button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `}
+                </div>
             </div>
         </div>
     `;
@@ -302,20 +357,34 @@ function renderDashboard() {
 
     document.getElementById('searchInput').oninput = (e) => {
         State.searchQuery = e.target.value;
-        const container = document.querySelector('.grid'); // hacky re-render of just list? nah simple full re-render for KISS
-        renderDashboard(); // re-render inputs focus is lost...
+        renderDashboard();
         // Restore focus
         const input = document.getElementById('searchInput');
         input.focus();
-        // Move cursor to end
-        const val = input.value;
-        input.value = '';
-        input.value = val;
+        input.setSelectionRange(input.value.length, input.value.length);
     };
 
     document.getElementById('btnAddCustomer').onclick = () => {
         showCustomerModal();
     };
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', handleKeyboardShortcuts);
+}
+
+function handleKeyboardShortcuts(e) {
+    // Ctrl+N: New customer
+    if (e.ctrlKey && e.key === 'n') {
+        e.preventDefault();
+        const btn = document.getElementById('btnAddCustomer');
+        if (btn) btn.click();
+    }
+    // Ctrl+F: Focus search
+    if (e.ctrlKey && e.key === 'f') {
+        e.preventDefault();
+        const search = document.getElementById('searchInput');
+        if (search) search.focus();
+    }
 }
 
 function renderCustomerDetail() {
@@ -323,115 +392,194 @@ function renderCustomerDetail() {
     if (!customer) return renderDashboard();
 
     appDiv.innerHTML = `
-        <div class="max-w-4xl mx-auto p-4 sm:p-6 pb-20">
-            <!-- Header -->
-            <button onclick="backToDashboard()" class="text-slate-500 hover:text-brand-600 flex items-center space-x-1 mb-6 transition">
-                ${Icons.back} <span>返回列表</span>
-            </button>
-
-            <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 mb-8 relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-4 opacity-10 text-brand-500 pointer-events-none">
-                    <svg class="w-64 h-64" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/><path d="M12 14l9-5-9-5-9 5 9 5z"/></svg>
+        <div class="desktop-layout">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h2 class="text-lg font-bold">客户管理系统</h2>
+                    <p class="text-xs text-slate-400 mt-1">Customer Manager</p>
                 </div>
                 
-                <div class="relative z-10">
-                    <h1 class="text-3xl font-bold text-slate-800 mb-2">${customer.name}</h1>
-                    <div class="flex items-center space-x-4 mb-6">
-                        <input type="text" id="contactInput" value="${customer.contact}" placeholder="添加联系方式..." 
-                            class="bg-slate-50 border-none rounded-lg px-3 py-1.5 text-sm text-slate-600 w-64 focus:ring-2 focus:ring-brand-500 outline-none">
-                        <button onclick="saveContact()" class="text-brand-600 text-sm font-medium hover:underline">保存联系人</button>
+                <nav class="sidebar-nav">
+                    <div class="nav-item" onclick="backToDashboard()">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        <span>返回列表</span>
                     </div>
-                    <button onclick="deleteCustomer()" class="text-red-400 hover:text-red-600 text-sm flex items-center space-x-1">
-                        ${Icons.trash} <span>删除客户</span>
+                </nav>
+                
+                <div class="sidebar-footer">
+                    <button id="btnLogout" class="nav-item w-full text-left text-slate-400 hover:text-red-400">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                        </svg>
+                        <span>退出登录</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Documents -->
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-bold text-slate-700">单据记录</h2>
-                <button onclick="addDocument()" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg text-sm shadow-md shadow-brand-500/20 transition">
-                    添加单据
-                </button>
-            </div>
-
-            <div class="space-y-3">
-                ${(customer.documents || []).length === 0 ? `<div class="text-center py-10 text-slate-400">暂无单据</div>` : ''}
-                ${(customer.documents || []).map((doc, idx) => `
-                    <div class="bg-white p-4 rounded-xl border border-slate-100 flex items-center justify-between hover:shadow-md transition group">
-                        <div class="flex items-center space-x-4">
-                            <div class="bg-slate-100 text-slate-500 p-2 rounded-lg">
-                                ${Icons.document}
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-slate-800">${doc.title}</h4>
-                                <p class="text-xs text-slate-400">${doc.date}</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-4">
-                            <span class="bg-brand-50 text-brand-700 px-2 py-1 rounded text-xs font-semibold">${doc.status || 'Draft'}</span>
-                            <button onclick="deleteDocument(${idx})" class="text-slate-300 hover:text-red-500 p-2 transition">
-                                ${Icons.trash}
-                            </button>
-                        </div>
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Top Bar -->
+                <div class="top-bar">
+                    <div>
+                        <h1 class="text-lg font-bold text-slate-800">${customer.name}</h1>
+                        <p class="text-sm text-slate-500">客户详情</p>
                     </div>
-                `).join('')}
-            </div>
-
-            <!-- Files Section -->
-            <div class="mt-12">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-bold text-slate-700">📁 客户资料</h2>
-                    <span class="text-sm text-slate-400">${(customer.files || []).length} 个文件</span>
+                    <div class="flex items-center space-x-3">
+                        <button onclick="deleteCustomer()" class="btn btn-secondary text-red-600 hover:bg-red-50 flex items-center space-x-2">
+                            ${Icons.trash}
+                            <span>删除客户</span>
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Upload Area -->
-                <div id="uploadArea" class="bg-gradient-to-br from-brand-50 to-indigo-50 border-2 border-dashed border-brand-300 rounded-xl p-8 text-center mb-6 cursor-pointer hover:border-brand-500 transition group">
-                    <input type="file" id="fileInput" class="hidden" multiple>
-                    <div class="text-brand-600 mb-3">
-                        <svg class="w-16 h-16 mx-auto opacity-60 group-hover:opacity-100 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-semibold text-slate-700 mb-2">拖拽文件到这里</h3>
-                    <p class="text-sm text-slate-500 mb-1">或点击选择文件</p>
-                    <p class="text-xs text-slate-400">支持 PDF、图片、Office 文档 · 自动压缩 · 最大 100MB</p>
-                </div>
+                <!-- Content Area -->
+                <div class="content-area">
+                    <div style="display: grid; grid-template-columns: 350px 1fr; gap: 24px; height: 100%;">
+                        <!-- Left Column: Customer Info -->
+                        <div>
+                            <div class="bg-white rounded-lg p-6 shadow-sm border border-slate-200">
+                                <h3 class="text-sm font-semibold text-slate-700 mb-4">客户信息</h3>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-xs font-medium text-slate-600 mb-2">客户名称</label>
+                                    <div class="px-3 py-2 bg-slate-50 rounded-md text-sm font-medium">${customer.name}</div>
+                                </div>
 
-                <!-- File List -->
-                <div class="space-y-3">
-                    ${(customer.files || []).length === 0 ? `<div class="text-center py-10 text-slate-400">暂无文件</div>` : ''}
-                    ${(customer.files || []).map((file, idx) => `
-                        <div class="bg-white p-4 rounded-xl border border-slate-100 hover:shadow-md transition">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-4 flex-1">
-                                    <div class="text-4xl">${FileUtils.getFileIcon(file.name)}</div>
-                                    <div class="flex-1">
-                                        <h4 class="font-bold text-slate-800">${file.name}</h4>
-                                        <div class="flex items-center space-x-3 text-xs text-slate-400 mt-1">
-                                            <span>压缩后 ${FileUtils.formatSize(file.compressedSize)}</span>
-                                            ${file.originalSize !== file.compressedSize ? `<span class="text-green-600">节省 ${Math.round((1 - file.compressedSize / file.originalSize) * 100)}%</span>` : ''}
-                                            <span>·</span>
-                                            <span>${new Date(file.uploadDate).toLocaleString()}</span>
+                                <div class="mb-4">
+                                    <label class="block text-xs font-medium text-slate-600 mb-2">联系方式</label>
+                                    <input 
+                                        type="text" 
+                                        id="contactInput" 
+                                        value="${customer.contact}" 
+                                        placeholder="添加联系方式..." 
+                                        class="w-full px-3 py-2 border border-slate-200 rounded-md text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+                                    >
+                                    <button onclick="saveContact()" class="mt-2 text-brand-600 text-xs font-medium hover:underline">保存</button>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-xs font-medium text-slate-600 mb-2">创建时间</label>
+                                    <div class="px-3 py-2 bg-slate-50 rounded-md text-sm text-slate-600">
+                                        ${new Date(customer.createdAt).toLocaleString('zh-CN')}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-600 mb-2">统计信息</label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div class="px-3 py-2 bg-blue-50 rounded-md text-center">
+                                            <div class="text-lg font-bold text-blue-600">${(customer.documents || []).length}</div>
+                                            <div class="text-xs text-blue-600">单据</div>
+                                        </div>
+                                        <div class="px-3 py-2 bg-green-50 rounded-md text-center">
+                                            <div class="text-lg font-bold text-green-600">${(customer.files || []).length}</div>
+                                            <div class="text-xs text-green-600">文件</div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="flex items-center space-x-2">
-                                    ${FileUtils.canPreview(file.name) ? `
-                                        <button onclick="previewFile(${idx})" class="px-3 py-1.5 text-sm text-brand-600 hover:bg-brand-50 rounded-lg transition">
-                                            👁️ 预览
-                                        </button>
-                                    ` : ''}
-                                    <button onclick="downloadFile(${idx})" class="px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50 rounded-lg transition">
-                                        ⬇️ 下载
-                                    </button>
-                                    <button onclick="deleteFile(${idx})" class="p-2 text-slate-300 hover:text-red-500 transition">
-                                        ${Icons.trash}
-                                    </button>
-                                </div>
                             </div>
                         </div>
-                    `).join('')}
+
+                        <!-- Right Column: Documents & Files -->
+                        <div style="overflow-y: auto;">
+                            <!-- Documents Section -->
+                            <div class="mb-6">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h3 class="text-sm font-semibold text-slate-700">单据记录</h3>
+                                    <button onclick="addDocument()" class="btn btn-primary btn-sm text-xs">添加单据</button>
+                                </div>
+
+                                ${(customer.documents || []).length === 0 ? `
+                                    <div class="bg-white rounded-lg p-8 text-center text-slate-400 border border-slate-200">
+                                        <svg class="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                        <p class="text-sm">暂无单据</p>
+                                    </div>
+                                ` : `
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>单据名称</th>
+                                                <th>日期</th>
+                                                <th>状态</th>
+                                                <th style="width: 80px">操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${(customer.documents || []).map((doc, idx) => `
+                                                <tr>
+                                                    <td class="font-medium">${doc.title}</td>
+                                                    <td class="text-slate-600">${doc.date}</td>
+                                                    <td><span class="badge badge-blue">${doc.status || 'Draft'}</span></td>
+                                                    <td>
+                                                        <button onclick="deleteDocument(${idx})" class="text-red-500 hover:text-red-700 text-sm">删除</button>
+                                                    </td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                `}
+                            </div>
+
+                                            <!-- Files Section -->
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <h3 class="text-sm font-semibold text-slate-700">客户资料 (${(customer.files || []).length} 个文件)</h3>
+                                    <button id="uploadBtn" class="btn btn-primary btn-sm text-xs">上传文件</button>
+                                    <input type="file" id="fileInput" class="hidden" multiple>
+                                </div>
+
+                                ${(customer.files || []).length === 0 ? `
+                                    <div class="bg-white rounded-lg p-8 text-center text-slate-400 border border-slate-200">
+                                        <svg class="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                        </svg>
+                                        <p class="text-sm">暂无文件</p>
+                                        <p class="text-xs mt-1">点击上方"上传文件"按钮添加</p>
+                                    </div>
+                                ` : `
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 40%">文件名</th>
+                                                <th style="width: 15%">大小</th>
+                                                <th style="width: 20%">上传时间</th>
+                                                <th style="width: 25%">操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${(customer.files || []).map((file, idx) => `
+                                                <tr>
+                                                    <td>
+                                                        <div class="flex items-center">
+                                                            <span class="text-2xl mr-3">${FileUtils.getFileIcon(file.name)}</span>
+                                                            <span class="font-medium text-sm">${file.name}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-slate-600">
+                                                        ${FileUtils.formatSize(file.compressedSize)}
+                                                        ${file.originalSize !== file.compressedSize ? `<span class="badge badge-green ml-1">-${Math.round((1 - file.compressedSize / file.originalSize) * 100)}%</span>` : ''}
+                                                    </td>
+                                                    <td class="text-slate-600 text-sm">${new Date(file.uploadDate).toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
+                                                    <td>
+                                                        <div class="flex items-center space-x-2">
+                                                            ${FileUtils.canPreview(file.name) ? `<button onclick="previewFile(${idx})" class="text-brand-600 hover:text-brand-700 text-sm">预览</button>` : ''}
+                                                            <button onclick="downloadFile(${idx})" class="text-brand-600 hover:text-brand-700 text-sm">下载</button>
+                                                            <button onclick="deleteFile(${idx})" class="text-red-500 hover:text-red-700 text-sm">删除</button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                `}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -450,7 +598,7 @@ function renderCustomerDetail() {
     };
 
     window.deleteCustomer = () => {
-        if (confirm(`确定要删除 ${customer.name} 及其所有单据吗?`)) {
+        if (confirm(`确定要删除 ${customer.name} 及其所有单据吗 ? `)) {
             State.customers = State.customers.filter(c => c.id !== customer.id);
             syncData();
         }
@@ -480,29 +628,15 @@ function renderCustomerDetail() {
     // File Management Functions
     if (!customer.files) customer.files = [];
 
-    // Setup upload area
-    const uploadArea = document.getElementById('uploadArea');
+    // Setup upload button
+    const uploadBtn = document.getElementById('uploadBtn');
     const fileInput = document.getElementById('fileInput');
 
-    uploadArea.onclick = () => fileInput.click();
+    if (uploadBtn) {
+        uploadBtn.onclick = () => fileInput.click();
+    }
 
-    // Drag and drop
-    uploadArea.ondragover = (e) => {
-        e.preventDefault();
-        uploadArea.classList.add('border-brand-600', 'bg-brand-100');
-    };
-
-    uploadArea.ondragleave = () => {
-        uploadArea.classList.remove('border-brand-600', 'bg-brand-100');
-    };
-
-    uploadArea.ondrop = async (e) => {
-        e.preventDefault();
-        uploadArea.classList.remove('border-brand-600', 'bg-brand-100');
-        const files = Array.from(e.dataTransfer.files);
-        await handleFileUpload(files);
-    };
-
+    // File input change
     fileInput.onchange = async (e) => {
         const files = Array.from(e.target.files);
         await handleFileUpload(files);
@@ -530,7 +664,7 @@ function renderCustomerDetail() {
                 const base64Content = await FileUtils.fileToBase64(compressedFile);
 
                 // Upload to GitHub
-                const filePath = `files/customer-${customer.id}/${compressedFile.name}`;
+                const filePath = `files / customer - ${customer.id}/${compressedFile.name}`;
                 await GitHub.uploadFile(filePath, base64Content, `Upload ${compressedFile.name}`);
 
                 // Add to customer files

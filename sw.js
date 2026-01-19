@@ -1,5 +1,5 @@
 // Service Worker for PWA
-const CACHE_NAME = 'customer-manager-v2';
+const CACHE_NAME = 'customer-manager-v3';
 const urlsToCache = [
     '/customer-doc-manager/',
     '/customer-doc-manager/index.html',
